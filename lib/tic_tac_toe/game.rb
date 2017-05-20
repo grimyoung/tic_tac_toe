@@ -5,6 +5,7 @@ module TicTacToe
 			@players = players
 			@board = board
 			@current_player ,@other_player = players.shuffle
+			@moves = ['1','2','3','4','5','6','7','8','9']
 		end
 
 		def switch_players
@@ -16,7 +17,7 @@ module TicTacToe
 		end
 
 		def get_move(human_move = gets.chomp)
-			human_move_to_coordinate(human_move)
+			num = human_move
 		end
 
 		def game_over_message
@@ -29,12 +30,22 @@ module TicTacToe
 			while true
 				board.formatted_grid
 				puts ''
-				puts solicit_move
-				x,y = get_move
+				puts solicit_move	
+				player_move = get_move
+				while(!valid_moves(player_move)) do
+					puts ''
+					puts "That is not a valid move."
+					board.formatted_grid
+					puts ''
+					puts solicit_move
+					player_move = get_move
+				end
+				x,y = human_move_to_coordinate(player_move)
 				board.set_cell(x,y, current_player.color)
 				if board.game_over
 					puts game_over_message
 					board.formatted_grid
+					puts ''
 					return
 				else
 					switch_players
@@ -42,7 +53,15 @@ module TicTacToe
 			end
 		end
 
-
+		def valid_moves(num)
+			if @moves.include?(num)
+				@moves -= [num]
+				puts @moves
+				return human_move_to_coordinate(num)
+			else
+				return false
+			end
+		end
 		private
 		def human_move_to_coordinate(human_move)
 			mapping = {
